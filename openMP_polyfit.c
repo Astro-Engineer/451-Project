@@ -332,7 +332,7 @@ static matrix_t * createTranspose( matrix_t *pMat )
     rVal->pContents = (double *) calloc( pMat->rows * pMat->cols, sizeof( double ));
     rVal->cols = pMat->rows;
     rVal->rows = pMat->cols;
-
+    int r, c;
     int num_threads;
 #pragma omp parallel
     {
@@ -340,9 +340,9 @@ static matrix_t * createTranspose( matrix_t *pMat )
         num_threads = omp_get_num_threads();
 	
     #pragma omp parallel for private(r, c)
-    for( int r = 0; r < rVal->rows; r++ )
+    for( r = 0; r < rVal->rows; r++ )
     {
-        for( int c = 0; c < rVal->cols; c++ )
+        for( c = 0; c < rVal->cols; c++ )
         {
             *MATRIX_VALUE_PTR(rVal, r, c) = *MATRIX_VALUE_PTR(pMat, c, r);
         }
