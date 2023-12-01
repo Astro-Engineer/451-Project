@@ -163,7 +163,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
                        (e_fill.tv_nsec - s_fill.tv_nsec) / 1e9;
     printf("Execution time of fill (A): %f seconds\n", elapsed_time);
 	
-    showMatrix( pMatA );
+    //showMatrix( pMatA );
 
     // Make the b matrix
     matrix_t *pMatB = createMatrix( pointCount, 1);
@@ -190,7 +190,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
                        (e_trans.tv_nsec - s_trans.tv_nsec) / 1e9;
     printf("Execution time of trans (A): %f seconds\n", elapsed_time);
 	
-    showMatrix( pMatAT );
+    //showMatrix( pMatAT );
 
     clock_gettime(CLOCK_MONOTONIC, &s_mult);
     // Make the product of matrices AT and A:
@@ -203,7 +203,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     elapsed_time = (e_mult.tv_sec - s_mult.tv_sec) +
                        (e_mult.tv_nsec - s_mult.tv_nsec) / 1e9;
     printf("Execution time of mult (A): %f seconds\n", elapsed_time);
-    showMatrix( pMatATA );
+    //showMatrix( pMatATA );
 
     // Make the product of matrices AT and b:
     matrix_t *pMatATB = createProduct( pMatAT, pMatB );
@@ -212,7 +212,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
         return -3;
     }
 
-    showMatrix( pMatATB );
+    //showMatrix( pMatATB );
 
     // Now we need to solve the system of linear equations,
     // (AT)Ax = (AT)b for "x", the coefficients of the polynomial.
@@ -225,7 +225,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
         if( 0.0 == prVal )
         {
             // printf( "Unable to solve equations, pr = %d, c = %d.\n", pr, c );
-            showMatrix( pMatATA );
+            //showMatrix( pMatATA );
             rVal = -4;
             break;
         }
@@ -246,7 +246,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
                 }
                 *MATRIX_VALUE_PTR(pMatATB, r, 0) -=  *MATRIX_VALUE_PTR(pMatATB, pr, 0) * factor;
 
-                showMatrix( pMatATB );
+                //showMatrix( pMatATB );
             }
         }
     }
@@ -260,9 +260,9 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     }
 
 	
-    showMatrix( pMatATA );
+    //showMatrix( pMatATA );
 
-    showMatrix( pMatATB );
+    //showMatrix( pMatATB );
 
     for( int i = 0; i < coefficientCount; i++)
     {
