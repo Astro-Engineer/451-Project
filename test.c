@@ -115,23 +115,6 @@ double cr3[]  = {0, 0, 0};                                    // coefficientResu
 int cc3       =  (int) (sizeof(cr3) / sizeof(cr3[0]));        // coefficientCount
 char *er3     = "error = -4";                                 // expected result
 
-// ---------------- TEST 4 DATA ------------------------
-// test MLS regeression example from https://www.mathsisfun.com/data/least-squares-regression.html
-
-//double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
-//double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
-const char* csvFileName = "filteredDistTotal.csv";
-double x4[] = {0}; // Initial array with a dummy value
-double y4[] = {0}; // Initial array with a dummy value
-size_t size = 0;
-
-int result = readCSV(csvFileName, x4, y4, &size);
-
-int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount
-double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
-int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
-char *er4     = "Will fail";                  // expected result
-
 
 
 //--------------------------------------------------------
@@ -140,6 +123,21 @@ char *er4     = "Will fail";                  // expected result
 //--------------------------------------------------------
 int main()
 {
+  // ---------------- TEST 4 DATA ------------------------
+  //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
+  //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
+  const char* csvFileName = "filteredDistTotal.csv";
+  double x4[] = {0}; // Initial array with a dummy value
+  double y4[] = {0}; // Initial array with a dummy value
+  size_t size = 0;
+
+  int result = readCSV(csvFileName, x4, y4, &size);
+
+  int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount  
+  double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
+  int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
+  char *er4     = "Will fail";                  // expected result
+
   //for time measurements
   clock_t start, end;
   double cpu_time_used;
