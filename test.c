@@ -30,7 +30,7 @@
 #include  <string.h>
 #include  "polyfit.h"
 #include  "openMP_polyfit.h"
-#include  "pthreads_polyfit.h"
+//#include  "pthreads_polyfit.h"
 
 //for timing
 #include <time.h>
@@ -200,7 +200,7 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test plane openmp produced %s\n", polyStringBf);
-
+    /*
     //PTHREADS
   clock_gettime(CLOCK_MONOTONIC, &start_time_ppt);
   rVal = pthreads_polyfit( pc3, x3, y3, cc3, cr3);
@@ -218,7 +218,7 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test plane pthreads produced %s\n", polyStringBf);
- 
+ */
  
 //---------------------TEST 4---------------------------
 
@@ -257,7 +257,7 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test taxi openmp produced %s\n", polyStringBf);
-
+    /*
     //PTHREADS
   clock_gettime(CLOCK_MONOTONIC, &start_time_tpt);
   rVal = pthreads_polyfit( pc4, x4, y4, cc4, cr4);
@@ -275,7 +275,7 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test taxi pthreads produced %s\n", polyStringBf);
-  
+  */
 //---------------------SUMMARY--------------------------- 
   return( -failedCount );
 }
