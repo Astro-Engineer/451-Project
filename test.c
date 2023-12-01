@@ -162,7 +162,8 @@ int main()
 //---------------------TEST 4---------------------------
   printf( "Test 4 expected %s\n", er4);
 
-  start = clock();
+  struct timespec start_time, end_time;
+  clock_gettime(CLOCK_MONOTONIC, &start_time);
   
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
   
@@ -175,9 +176,10 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
 
-  end = clock();
-  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-  printf("Execution time of custom test (4): %f seconds\n", cpu_time_used);
+  clock_gettime(CLOCK_MONOTONIC, &end_time);
+  double elapsed_time = (end_time.tv_sec - start_time.tv_sec) +
+                       (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+  printf("Execution time of custom test (4): %f seconds\n", elapsed_time);
   
   printf( "Test 4 produced %s\n", polyStringBf);
   if( 0 == strcmp( polyStringBf, er4) )
