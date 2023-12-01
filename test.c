@@ -175,10 +175,6 @@ int main()
   double cr4[]  = {0, 0, 0, 0};                                       // coefficientResults
   int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
   char *er4     = "Will fail";                  // expected result
-
-  //for time measurements
-  clock_t start, end;
-  double cpu_time_used;
   
   int rVal;
   int passedCount = 0;
@@ -232,7 +228,15 @@ int main()
   
  //---------------------TEST 3---------------------------
   printf( "Test 3 expected %s\n", er3);
+
+  struct timespec start_time3, end_time3;
+  clock_gettime(CLOCK_MONOTONIC, &start_time3);
   rVal = polyfit( pc3, x3, y3, cc3, cr3);
+  clock_gettime(CLOCK_MONOTONIC, &end_time3);
+  double elapsed_time3 = (end_time3.tv_sec - start_time3.tv_sec) +
+                       (end_time3.tv_nsec - start_time3.tv_nsec) / 1e9;
+  printf("Execution time of custom test (3): %f seconds\n", elapsed_time4);
+    
   if( 0 == rVal)
   { 
     polyToString( polyStringBf, POLY_STRING_BF_SZ, cc3, cr3 );
@@ -256,11 +260,15 @@ int main()
 //---------------------TEST 4---------------------------
   printf( "Test 4 expected %s\n", er4);
 
-  struct timespec start_time, end_time;
+  struct timespec start_time4, end_time4;
   clock_gettime(CLOCK_MONOTONIC, &start_time);
   
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
-  
+  clock_gettime(CLOCK_MONOTONIC, &end_time4);
+  double elapsed_time4 = (end_time4.tv_sec - start_time4.tv_sec) +
+                       (end_time4.tv_nsec - start_time4.tv_nsec) / 1e9;
+  printf("Execution time of custom test (4): %f seconds\n", elapsed_time4);
+
   if( 0 == rVal)
   { 
     polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
@@ -269,11 +277,6 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-
-  clock_gettime(CLOCK_MONOTONIC, &end_time);
-  double elapsed_time = (end_time.tv_sec - start_time.tv_sec) +
-                       (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
-  printf("Execution time of custom test (4): %f seconds\n", elapsed_time);
   
   printf( "Test 4 produced %s\n", polyStringBf);
   if( 0 == strcmp( polyStringBf, er4) )
