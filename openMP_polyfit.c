@@ -380,7 +380,7 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
 	    
         // Initialize the product matrix contents:
         // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
-        #pragma omp parallel for collapse(3) private(i, j, k) reduction(+:sum)
+        #pragma omp parallel for collapse(2) private(i, j, k) reduction(+:sum)
 
         for( i = 0; i < rVal->rows; i++)
         {
