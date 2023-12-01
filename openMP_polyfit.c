@@ -333,7 +333,7 @@ static matrix_t * createTranspose( matrix_t *pMat )
     rVal->cols = pMat->rows;
     rVal->rows = pMat->cols;
 
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for private(r, c)
     for( int r = 0; r < rVal->rows; r++ )
     {
         for( int c = 0; c < rVal->cols; c++ )
