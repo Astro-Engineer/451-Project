@@ -3,6 +3,10 @@
 #include <omp.h>
 #include <time.h>
 
+#include <fstream>
+#include <sstream>
+#include <string>
+
 // Linear regression function to estimate coefficients (slope and intercept)
 void linearRegression(const std::vector<double>& X, const std::vector<double>& y, double& slope, double& intercept, double learning_rate) {
     int n = X.size();
@@ -28,6 +32,29 @@ int main() {
     std::vector<double> X = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0};
     std::vector<double> y = {2.0, 4.0, 5.5, 4.8, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0};
 
+    const std::string csvFileName = "your_file.csv";
+    const std::string csvFilePath = "./" + csvFileName;
+    std::ifstream inputFile(csvFilePath);
+
+    if (!inputFile.is_open()) {
+        std::cerr << "Error: Unable to open the CSV file." << std::endl;
+        return 1; // Return an error code
+    }
+
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        std::istringstream iss(line);
+        double x, y;
+
+        if (iss >> x >> std::ws >> std::ws >> y) {
+            // Add values to the vectors
+            X.push_back(x);
+            y.push_back(y);
+        } else {
+            std::cerr << "Error: Invalid line format in the CSV file." << std::endl;
+        }
+    }
+	
     double slope = 0.0;
     double intercept = 0.0;
 
