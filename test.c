@@ -187,7 +187,7 @@ int main()
   clock_gettime(CLOCK_MONOTONIC, &end_time_pop);
   elapsed_time = (end_time_pop.tv_sec - start_time_pop.tv_sec) +
                        (end_time_pop.tv_nsec - start_time_pop.tv_nsec) / 1e9;
-  printf("Execution time of openmp plane: %f seconds\n", elapsed_time_pop);
+  printf("Execution time of openmp plane: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
@@ -226,7 +226,7 @@ int main()
   clock_gettime(CLOCK_MONOTONIC, &end_time_top);
   elapsed_time = (end_time_top.tv_sec - start_time_top.tv_sec) +
                        (end_time_top.tv_nsec - start_time_top.tv_nsec) / 1e9;
-  printf("Execution time of openmp taxi: %f seconds\n", elapsed_time_top);
+  printf("Execution time of openmp taxi: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
