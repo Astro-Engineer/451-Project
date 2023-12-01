@@ -235,7 +235,7 @@ int main()
   clock_gettime(CLOCK_MONOTONIC, &end_time3);
   double elapsed_time3 = (end_time3.tv_sec - start_time3.tv_sec) +
                        (end_time3.tv_nsec - start_time3.tv_nsec) / 1e9;
-  printf("Execution time of custom test (3): %f seconds\n", elapsed_time4);
+  printf("Execution time of custom test (3): %f seconds\n", elapsed_time3);
     
   if( 0 == rVal)
   { 
@@ -261,7 +261,7 @@ int main()
   printf( "Test 4 expected %s\n", er4);
 
   struct timespec start_time4, end_time4;
-  clock_gettime(CLOCK_MONOTONIC, &start_time);
+  clock_gettime(CLOCK_MONOTONIC, &start_time4);
   
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
   clock_gettime(CLOCK_MONOTONIC, &end_time4);
