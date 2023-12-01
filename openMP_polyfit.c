@@ -410,23 +410,18 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
         rVal->pContents = (double *) calloc( rVal->rows * rVal->cols, sizeof( double ));
 
 
-	int i, j, k;
-        double sum;
-	    
-        // Initialize the product matrix contents:
-        // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
-        #pragma omp parallel for collapse(2) private(i, j, k) reduction(+:sum) 
-
-        for( i = 0; i < rVal->rows; i++)
-        {
-            for( j = 0; j < rVal->cols; j++)
-            { 
-		sum = 0.0;
-                for( k = 0; k < pLeft->cols; k++) 
-                {
-                    sum += (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
+	#pragma omp parallel for collapse(2)
+        for (int blockRow = 0; blockRow < rVal->rows; blockRow += blockSize) {
+            for (int blockCol = 0; blockCol < rVal->cols; blockCol += blockSize) {
+                for (int i = blockRow; i < MIN(blockRow + blockSize, rVal->rows); i++) {
+                    for (int j = blockCol; j < MIN(blockCol + blockSize, rVal->cols); j++) {
+                        double sum = 0.0;
+                        for (int k = 0; k < pLeft->cols; k++) {
+                            sum += (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
+                        }
+                        *MATRIX_VALUE_PTR(rVal, i, j) = sum;
+                    }
                 }
-		*MATRIX_VALUE_PTR(rVal, i, j) = sum;
             }
         }
     }    
