@@ -70,7 +70,22 @@ char *er3     = "error = -4";                                 // expected result
 
 // ---------------- TEST 4 DATA ------------------------
 // test MLS regeression example from https://www.mathsisfun.com/data/least-squares-regression.html
-const char* csvFileName = "filteredDistTotal.csv"; // Replace with your CSV file name
+
+//double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
+//double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
+const char* csvFileName = "filteredDistTotal.csv";
+double x4[] = {0}; // Initial array with a dummy value
+double y4[] = {0}; // Initial array with a dummy value
+size_t size = 0;
+
+int result = readCSV(csvFileName, x4, y4, &size);
+
+int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount
+double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
+int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
+char *er4     = "Will fail";                  // expected result
+
+int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
     FILE* file = fopen(csvFileName, "r");
 
     if (file == NULL) {
@@ -78,42 +93,43 @@ const char* csvFileName = "filteredDistTotal.csv"; // Replace with your CSV file
         return 1; // Return an error code
     }
 
-    double* x4 = NULL;
-    double* y4 = NULL;
-    size_t size = 0;
-    char line[100];  // Directly using a constant value for simplicity
+    *size = 0;
+    size_t capacity = 1;  // Initial capacity, can be adjusted based on your needs
+    char line[100];
 
     while (fgets(line, sizeof(line), file) != NULL) {
-        double x, y;
+        double xValue, yValue;
 
-        if (sscanf(line, "%lf,%lf", &x, &y) == 2) {
-            x4 = realloc(x4, (size + 1) * sizeof(double));
-            y4 = realloc(y4, (size + 1) * sizeof(double));
+        if (sscanf(line, "%lf,%lf", &xValue, &yValue) == 2) {
+            if (*size == capacity) {
+                // Double the capacity
+                capacity *= 2;
+                double* tempX = realloc(x, capacity * sizeof(double));
+                double* tempY = realloc(y, capacity * sizeof(double));
 
-            if (x4 == NULL || y4 == NULL) {
-                fprintf(stderr, "Error: Memory allocation failed.\n");
-                fclose(file);
-                free(x4);
-                free(y4);
-                return 1;
+                if (tempX == NULL || tempY == NULL) {
+                    fprintf(stderr, "Error: Memory allocation failed.\n");
+                    fclose(file);
+                    free(x);
+                    free(y);
+                    return 1;
+                }
+
+                x = tempX;
+                y = tempY;
             }
 
-            x4[size] = x;
-            x4[size] = y;
-            size++;
+            x[*size] = xValue;
+            y[*size] = yValue;
+            (*size)++;
         } else {
             fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
         }
     }
 
     fclose(file);
-//double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
-//double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
-int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount
-double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
-int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
-char *er4     = "Will fail";                  // expected result
-
+    return 0; // Return 0 on success
+}
 
 //--------------------------------------------------------
 // main()
