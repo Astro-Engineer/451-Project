@@ -71,7 +71,7 @@ char *er3     = "error = -4";                                 // expected result
 double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
 double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
 int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount
-double cr4[]  = {0, 0, 0, 0};                                       // coefficientResults
+double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
 int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
 char *er4     = "Will fail";                  // expected result
 
