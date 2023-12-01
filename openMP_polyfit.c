@@ -114,7 +114,7 @@ static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
 //int polyfit( int pointCount, point_t pointArray[],  int coeffCount, double coeffArray[] )
 int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coefficientCount, double *coefficientResults )
 {
-    struct timespec s_create, e_create, s_fill, e_fill, s_mult, e_mult, s_trans, e_trans;
+    struct timespec s_create, e_create, s_fill, e_fill, s_mult, e_mult, s_trans, e_trans, s_gauss, e_gauss;
     double elapsed_time;
     int rVal = 0;
     int degree = coefficientCount - 1;
@@ -219,7 +219,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
 
     // Now we need to solve the system of linear equations,
     // (AT)Ax = (AT)b for "x", the coefficients of the polynomial.
-
+    clock_gettime(CLOCK_MONOTONIC, &e_gauss);
     for( int c = 0; c < pMatATA->cols; c++ )
     {
         int pr = c;     // pr is the pivot row.
@@ -261,7 +261,11 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
         *MATRIX_VALUE_PTR(pMatATA, pr, c) /= prVal;
         *MATRIX_VALUE_PTR(pMatATB, pr, 0) /= prVal;
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_gauss);
+    elapsed_time = (e_gauss.tv_sec - s_gauss.tv_sec) +
+                       (e_gauss.tv_nsec - s_gauss.tv_nsec) / 1e9;
+    printf("Execution time of gauss (A): %f seconds\n", elapsed_time);
+	
     showMatrix( pMatATA );
 
     showMatrix( pMatATB );
