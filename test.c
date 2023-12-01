@@ -30,6 +30,7 @@
 #include  <string.h>
 #include  "polyfit.h"
 #include  "openMP_polyfit.h"
+#include  "pthreads_polyfit.h"
 
 //for timing
 #include <time.h>
@@ -163,8 +164,8 @@ int main()
 
  //---------------------TEST 3---------------------------
 
-  struct timespec start_time_p, end_time_p, start_time_pop, end_time_pop;
-
+  struct timespec start_time_p, end_time_p, start_time_pop, end_time_pop, start_time_ppt, end_time_ppt;
+    //NAIVE
   clock_gettime(CLOCK_MONOTONIC, &start_time_p);
   rVal = polyfit( pc3, x3, y3, cc3, cr3);
   clock_gettime(CLOCK_MONOTONIC, &end_time_p);
@@ -181,7 +182,8 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test plane produced %s\n", polyStringBf);
-    
+
+    //OPENMP
   clock_gettime(CLOCK_MONOTONIC, &start_time_pop);
   rVal = openmp_polyfit( pc3, x3, y3, cc3, cr3);
   clock_gettime(CLOCK_MONOTONIC, &end_time_pop);
@@ -198,12 +200,30 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test plane openmp produced %s\n", polyStringBf);
+
+    //PTHREADS
+  clock_gettime(CLOCK_MONOTONIC, &start_time_ppt);
+  rVal = pthreads_polyfit( pc3, x3, y3, cc3, cr3);
+  clock_gettime(CLOCK_MONOTONIC, &end_time_ppt);
+  elapsed_time = (end_time_ppt.tv_sec - start_time_ppt.tv_sec) +
+                       (end_time_ppt.tv_nsec - start_time_ppt.tv_nsec) / 1e9;
+  printf("Execution time of pthreads plane: %f seconds\n", elapsed_time);
+    
+  if( 0 == rVal)
+  { 
+    pthreads_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc3, cr3 );
+  }
+  else
+  {
+    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
+  }
+  printf( "Test plane pthreads produced %s\n", polyStringBf);
  
  
 //---------------------TEST 4---------------------------
 
-  struct timespec start_time_t, end_time_t, start_time_top, end_time_top;
-
+  struct timespec start_time_t, end_time_t, start_time_top, end_time_top, start_time_tpt, end_time_tpt;
+    //NAIVE
   clock_gettime(CLOCK_MONOTONIC, &start_time_t);
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
   clock_gettime(CLOCK_MONOTONIC, &end_time_t);
@@ -220,7 +240,7 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test taxi produced %s\n", polyStringBf);
-    
+    //OPENMP
   clock_gettime(CLOCK_MONOTONIC, &start_time_top);
   rVal = openmp_polyfit( pc4, x4, y4, cc4, cr4);
   clock_gettime(CLOCK_MONOTONIC, &end_time_top);
@@ -237,7 +257,24 @@ int main()
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
   printf( "Test taxi openmp produced %s\n", polyStringBf);
- 
+
+    //PTHREADS
+  clock_gettime(CLOCK_MONOTONIC, &start_time_tpt);
+  rVal = pthreads_polyfit( pc4, x4, y4, cc4, cr4);
+  clock_gettime(CLOCK_MONOTONIC, &end_time_tpt);
+  elapsed_time = (end_time_tpt.tv_sec - start_time_tpt.tv_sec) +
+                       (end_time_tpt.tv_nsec - start_time_tpt.tv_nsec) / 1e9;
+  printf("Execution time of pthreads taxi: %f seconds\n", elapsed_time);
+    
+  if( 0 == rVal)
+  { 
+    pthreads_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
+  }
+  else
+  {
+    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
+  }
+  printf( "Test taxi pthreads produced %s\n", polyStringBf);
   
 //---------------------SUMMARY--------------------------- 
   return( -failedCount );
