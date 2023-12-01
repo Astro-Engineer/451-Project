@@ -333,6 +333,12 @@ static matrix_t * createTranspose( matrix_t *pMat )
     rVal->cols = pMat->rows;
     rVal->rows = pMat->cols;
 
+    int num_threads;
+#pragma omp parallel
+    {
+#pragma omp single
+        num_threads = omp_get_num_threads();
+	
     #pragma omp parallel for private(r, c)
     for( int r = 0; r < rVal->rows; r++ )
     {
@@ -341,6 +347,8 @@ static matrix_t * createTranspose( matrix_t *pMat )
             *MATRIX_VALUE_PTR(rVal, r, c) = *MATRIX_VALUE_PTR(pMat, c, r);
         }
     }
+
+    printf("Number of active threads: %d\n", num_threads);
     return rVal;
 }
 
