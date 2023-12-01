@@ -35,7 +35,10 @@
 //for csv
 #include <stdlib.h>
 
-int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
+#include <stdio.h>
+#include <stdlib.h>
+
+int readCSV(const char* csvFileName, double** x, double** y, size_t* size) {
     FILE* file = fopen(csvFileName, "r");
 
     if (file == NULL) {
@@ -47,6 +50,16 @@ int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
     size_t capacity = 1;  // Initial capacity, can be adjusted based on your needs
     char line[100];
 
+    // Allocate memory for *x and *y
+    *x = malloc(capacity * sizeof(double));
+    *y = malloc(capacity * sizeof(double));
+
+    if (*x == NULL || *y == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed.\n");
+        fclose(file);
+        return 1;
+    }
+
     while (fgets(line, sizeof(line), file) != NULL) {
         double xValue, yValue;
 
@@ -54,23 +67,26 @@ int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
             if (*size == capacity) {
                 // Double the capacity
                 capacity *= 2;
-                double* tempX = realloc(x, capacity * sizeof(double));
-                double* tempY = realloc(y, capacity * sizeof(double));
+                double* tempX = realloc(*x, capacity * sizeof(double));
+                double* tempY = realloc(*y, capacity * sizeof(double));
 
                 if (tempX == NULL || tempY == NULL) {
                     fprintf(stderr, "Error: Memory allocation failed.\n");
                     fclose(file);
-                    free(x);
-                    free(y);
+
+                    // Clean up the existing memory
+                    free(*x);
+                    free(*y);
+
                     return 1;
                 }
 
-                x = tempX;
-                y = tempY;
+                *x = tempX;
+                *y = tempY;
             }
 
-            x[*size] = xValue;
-            y[*size] = yValue;
+            (*x)[*size] = xValue;
+            (*y)[*size] = yValue;
             (*size)++;
         } else {
             fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
@@ -80,6 +96,7 @@ int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
     fclose(file);
     return 0; // Return 0 on success
 }
+
 
 
 // Buffer to hold a string representation of a polynomial:
@@ -127,8 +144,8 @@ int main()
   //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
   //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
   const char* csvFileName = "filteredDistTotalH.csv";
-  double x4[] = {0}; // Initial array with a dummy value
-  double y4[] = {0}; // Initial array with a dummy value
+  double* x4 = NULL;
+  double* y4 = NULL;
   size_t size = 0;
 
   int result = readCSV(csvFileName, x4, y4, &size);
