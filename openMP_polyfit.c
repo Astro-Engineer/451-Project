@@ -79,6 +79,7 @@ static void         reallyShowMatrix( matrix_t *pMat );
 #endif  // SHOW_MATRIX
 static matrix_t *   createTranspose( matrix_t *pMat );
 static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
+void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int coefficientCount);
 
 
 //=========================================================
@@ -427,7 +428,7 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
     return rVal;
 }
 
-void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree) {
+void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int coefficientCount) {
     #pragma omp parallel for collapse(2)
     for (int blockRow = 0; blockRow < pointCount; blockRow += blockSize) {
         for (int blockCol = 0; blockCol < coefficientCount; blockCol += blockSize) {
