@@ -126,7 +126,7 @@ int main()
   // ---------------- TEST 4 DATA ------------------------
   //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
   //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
-  const char* csvFileName = "filteredDistTotal.csv";
+  const char* csvFileName = "filteredDistTotalH.csv";
   double x4[] = {0}; // Initial array with a dummy value
   double y4[] = {0}; // Initial array with a dummy value
   size_t size = 0;
