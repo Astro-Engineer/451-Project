@@ -33,7 +33,6 @@
 #include <string.h>     // strlen()
 
 #include "polyfit.h"
-#include <omp.h>
 
 // Define SHOW_MATRIX to display intermediate matrix values:
 // #define SHOW_MATRIX 1
@@ -332,8 +331,6 @@ static matrix_t * createTranspose( matrix_t *pMat )
     rVal->pContents = (double *) calloc( pMat->rows * pMat->cols, sizeof( double ));
     rVal->cols = pMat->rows;
     rVal->rows = pMat->cols;
-
-    #pragma omp parallel for collapse(2)
     for( int r = 0; r < rVal->rows; r++ )
     {
         for( int c = 0; c < rVal->cols; c++ )
@@ -368,14 +365,12 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
 
         // Initialize the product matrix contents:
         // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
-        #pragma omp parallel for collapse(3)
         for( int i = 0; i < rVal->rows; i++)
         {
             for( int j = 0; j < rVal->cols; j++ )
             {
                 for( int k = 0; k < pLeft->cols; k++)
                 {
-                    #pragma omp atomic
                     *MATRIX_VALUE_PTR(rVal, i, j) +=
                         (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
                 }
