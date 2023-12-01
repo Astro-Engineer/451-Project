@@ -135,7 +135,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     {
         return -3;
     }
-    #pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for 
     for( int r = 0; r < pointCount; r++)
     {
         for( int c = 0; c < coefficientCount; c++)
@@ -153,7 +153,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
         return -3;
     }
 
-    #pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for 
     for( int r = 0; r < pointCount; r++)
     {
         *(MATRIX_VALUE_PTR(pMatB, r, 0)) = yValues[r];
@@ -340,7 +340,7 @@ static matrix_t * createTranspose( matrix_t *pMat )
 #pragma omp single
         num_threads = omp_get_num_threads();
 	
-    #pragma omp parallel for private(r, c) schedule(dynamic)
+    #pragma omp parallel for private(r, c) 
     for( r = 0; r < rVal->rows; r++ )
     {
         for( c = 0; c < rVal->cols; c++ )
@@ -381,7 +381,7 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
 	    
         // Initialize the product matrix contents:
         // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
-        #pragma omp parallel for collapse(2) private(i, j, k) reduction(+:sum) schedule(dynamic)
+        #pragma omp parallel for collapse(2) private(i, j, k) reduction(+:sum) 
 
         for( i = 0; i < rVal->rows; i++)
         {
