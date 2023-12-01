@@ -51,8 +51,8 @@ int readCSV(const char* csvFileName, double* x, double* y, size_t* size) {
     char line[100];
 
     // Allocate memory for *x and *y
-    *x = (double*)malloc(capacity * sizeof(double));
-    *y = (double*)malloc(capacity * sizeof(double));
+    x = (double*)malloc(capacity * sizeof(double));
+    y = (double*)malloc(capacity * sizeof(double));
 
     if (x == NULL || y == NULL) {
         fprintf(stderr, "Error: Memory allocation failed.\n");
