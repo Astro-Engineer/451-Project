@@ -35,6 +35,9 @@
 #include "openMP_polyfit.h"
 #include <omp.h>
 
+#include <math.h>
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 //timing
 #include <time.h>
 
