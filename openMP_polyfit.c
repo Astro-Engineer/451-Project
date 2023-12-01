@@ -135,7 +135,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     {
         return -3;
     }
-
+    #pragma omp parallel for
     for( int r = 0; r < pointCount; r++)
     {
         for( int c = 0; c < coefficientCount; c++)
