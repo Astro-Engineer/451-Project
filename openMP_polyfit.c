@@ -38,6 +38,8 @@
 //timing
 #include <time.h>
 
+//block initialiation
+int blockSize = 32;
 // Define SHOW_MATRIX to display intermediate matrix values:
 // #define SHOW_MATRIX 1
 
@@ -362,16 +364,23 @@ static matrix_t * createTranspose( matrix_t *pMat )
     int num_threads;
 
 	
-    #pragma omp parallel for private(r, c) 
-    for( r = 0; r < rVal->rows; r++ )
-    {
-        for( c = 0; c < rVal->cols; c++ )
-        {
-            *MATRIX_VALUE_PTR(rVal, r, c) = *MATRIX_VALUE_PTR(pMat, c, r);
+    int numBlocksRow = (pMat->rows + blockSize - 1) / blockSize;
+    int numBlocksCol = (pMat->cols + blockSize - 1) / blockSize;
+
+    #pragma omp parallel for collapse(2)
+    for (int blockRow = 0; blockRow < numBlocksRow; blockRow++) {
+        for (int blockCol = 0; blockCol < numBlocksCol; blockCol++) {
+            int startRow = blockRow * blockSize;
+            int startCol = blockCol * blockSize;
+
+            for (int r = startRow; r < MIN(startRow + blockSize, pMat->rows); r++) {
+                for (int c = startCol; c < MIN(startCol + blockSize, pMat->cols); c++) {
+                    *MATRIX_VALUE_PTR(rVal, c, r) = *MATRIX_VALUE_PTR(pMat, r, c);
+                }
+            }
         }
     }
-    
-    printf("Number of active threads: %d\n", num_threads);
+
     return rVal;
 }
 
