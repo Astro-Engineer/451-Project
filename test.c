@@ -163,7 +163,7 @@ int main()
   printf("Size: %zu\n", size);
 
   int pc4       = (int)size;           // pointCount  
-  double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
+  double cr4[]  = {0, 0, 0, 0};                                       // coefficientResults
   int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
   char *er4     = "Will fail";                  // expected result
 
