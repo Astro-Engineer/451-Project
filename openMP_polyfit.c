@@ -368,17 +368,18 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
 
         // Initialize the product matrix contents:
         // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
-        #pragma omp parallel for collapse(3)
+        #pragma omp parallel for collapse(3) private(i, j, k) reduction(+:sum)
+
         for( int i = 0; i < rVal->rows; i++)
         {
             for( int j = 0; j < rVal->cols; j++ )
             {
+		double sum = 0.0;
                 for( int k = 0; k < pLeft->cols; k++)
                 {
-                    #pragma omp atomic
-                    *MATRIX_VALUE_PTR(rVal, i, j) +=
-                        (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
+                    sum += (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
                 }
+		*MATRIX_VALUE_PTR(rVal, i, j) = sum;
             }
         }
     }    
