@@ -370,16 +370,23 @@ static matrix_t * createTranspose( matrix_t *pMat )
     int numBlocksRow = (pMat->rows + blockSize - 1) / blockSize;
     int numBlocksCol = (pMat->cols + blockSize - 1) / blockSize;
 
-    #pragma omp parallel for collapse(2)
-    for (int blockRow = 0; blockRow < numBlocksRow; blockRow++) {
-        for (int blockCol = 0; blockCol < numBlocksCol; blockCol++) {
-            int startRow = blockRow * blockSize;
-            int startCol = blockCol * blockSize;
+    int i, j, k;
+        double sum;
+	    
+        // Initialize the product matrix contents:
+        // product[i,j] = sum{k = 0 .. (pLeft->cols - 1)} (pLeft[i,k] * pRight[ k, j])
+        #pragma omp parallel for collapse(2) private(i, j, k) reduction(+:sum) 
 
-            for (int r = startRow; r < MIN(startRow + blockSize, pMat->rows); r++) {
-                for (int c = startCol; c < MIN(startCol + blockSize, pMat->cols); c++) {
-                    *MATRIX_VALUE_PTR(rVal, c, r) = *MATRIX_VALUE_PTR(pMat, r, c);
+        for( i = 0; i < rVal->rows; i++)
+        {
+            for( j = 0; j < rVal->cols; j++)
+            { 
+		sum = 0.0;
+                for( k = 0; k < pLeft->cols; k++) 
+                {
+                    sum += (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
                 }
+		*MATRIX_VALUE_PTR(rVal, i, j) = sum;
             }
         }
     }
