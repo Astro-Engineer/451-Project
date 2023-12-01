@@ -35,6 +35,9 @@
 #include "openMP_polyfit.h"
 #include <omp.h>
 
+//timing
+#include <time.h>
+
 // Define SHOW_MATRIX to display intermediate matrix values:
 // #define SHOW_MATRIX 1
 
@@ -105,6 +108,8 @@ static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
 //int polyfit( int pointCount, point_t pointArray[],  int coeffCount, double coeffArray[] )
 int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coefficientCount, double *coefficientResults )
 {
+    struct timespec s_create, e_create, s_fill, e_fill, s_mult, e_mult, s_trans, e_trans;
+    double elapsed_time;
     int rVal = 0;
     int degree = coefficientCount - 1;
 
@@ -130,11 +135,18 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     // printf( "coefficientCount = %d\n", coefficientCount );
 
     // Make the A matrix:
+    clock_gettime(CLOCK_MONOTONIC, &s_create);
     matrix_t *pMatA = createMatrix( pointCount, coefficientCount );
     if( NULL == pMatA)
     {
         return -3;
     }
+    clock_gettime(CLOCK_MONOTONIC, &e_create);
+    elapsed_time = (e_create.tv_sec - s_create.tv_sec) +
+                       (e_create.tv_nsec - s_create.tv_nsec) / 1e9;
+    printf("Execution time of create (A): %f seconds\n", elapsed_time);
+
+    clock_gettime(CLOCK_MONOTONIC, &s_fill);
     #pragma omp parallel for 
     for( int r = 0; r < pointCount; r++)
     {
@@ -143,7 +155,11 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
             *(MATRIX_VALUE_PTR(pMatA, r, c)) = pow((xValues[r]), (double) (degree -c));
         }
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_fill);
+    elapsed_time = (e_fill.tv_sec - s_fill.tv_sec) +
+                       (e_fill.tv_nsec - s_fill.tv_nsec) / 1e9;
+    printf("Execution time of fill (A): %f seconds\n", elapsed_time);
+	
     showMatrix( pMatA );
 
     // Make the b matrix
@@ -159,23 +175,32 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
         *(MATRIX_VALUE_PTR(pMatB, r, 0)) = yValues[r];
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &s_trans);
     // Make the transpose of matrix A
     matrix_t * pMatAT = createTranspose( pMatA );
     if( NULL == pMatAT )
     {
         return -3;
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_trans);
+    elapsed_time = (e_trans.tv_sec - s_trans.tv_sec) +
+                       (e_trans.tv_nsec - s_trans.tv_nsec) / 1e9;
+    printf("Execution time of trans (A): %f seconds\n", elapsed_time);
+	
     showMatrix( pMatAT );
 
+    clock_gettime(CLOCK_MONOTONIC, &s_mult);
     // Make the product of matrices AT and A:
     matrix_t *pMatATA = createProduct( pMatAT, pMatA );
     if( NULL == pMatATA )
     {
         return -3;
     }
-
-     showMatrix( pMatATA );
+    clock_gettime(CLOCK_MONOTONIC, &e_mult);
+    elapsed_time = (e_mult.tv_sec - s_mult.tv_sec) +
+                       (e_mult.tv_nsec - s_mult.tv_nsec) / 1e9;
+    printf("Execution time of mult (A): %f seconds\n", elapsed_time);
+    showMatrix( pMatATA );
 
     // Make the product of matrices AT and b:
     matrix_t *pMatATB = createProduct( pMatAT, pMatB );
