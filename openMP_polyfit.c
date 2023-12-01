@@ -79,7 +79,7 @@ static void         reallyShowMatrix( matrix_t *pMat );
 #endif  // SHOW_MATRIX
 static matrix_t *   createTranspose( matrix_t *pMat );
 static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
-void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int coefficientCount);
+//void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int coefficientCount);
 
 
 //=========================================================
@@ -153,7 +153,14 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     printf("Execution time of create (A): %f seconds\n", elapsed_time);
 
     clock_gettime(CLOCK_MONOTONIC, &s_fill);
-    blockPow(pMatA, xValues, pointCount, degree, coefficientCount);
+    #pragma omp parallel for 
+    for( int r = 0; r < pointCount; r++)
+    {
+        for( int c = 0; c < coefficientCount; c++)
+        {
+            *(MATRIX_VALUE_PTR(pMatA, r, c)) = pow((xValues[r]), (double) (degree -c));
+        }
+    }
     clock_gettime(CLOCK_MONOTONIC, &e_fill);
     elapsed_time = (e_fill.tv_sec - s_fill.tv_sec) +
                        (e_fill.tv_nsec - s_fill.tv_nsec) / 1e9;
@@ -427,7 +434,7 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
        
     return rVal;
 }
-
+/*
 void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int coefficientCount) {
     #pragma omp parallel for collapse(2)
     for (int blockRow = 0; blockRow < pointCount; blockRow += blockSize) {
@@ -440,7 +447,7 @@ void blockPow(matrix_t *pMatA, double *xValues, int pointCount, int degree, int 
         }
     }
 }
-
+*/
 //--------------------------------------------------------
 // destroyMatrix()
 // Frees both the allocated matrix and its contents array.
