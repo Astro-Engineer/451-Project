@@ -42,7 +42,7 @@
 #include <time.h>
 
 //block initialiation
-int blockSize = 32;
+int blockSize = 64;
 // Define SHOW_MATRIX to display intermediate matrix values:
 // #define SHOW_MATRIX 1
 
