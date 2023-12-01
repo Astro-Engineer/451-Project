@@ -30,6 +30,9 @@
 #include  <string.h>
 #include  "polyfit.h"
 
+//for timing
+#include <time.h>
+
 // Buffer to hold a string representation of a polynomial:
 #define POLY_STRING_BF_SZ   (256)
 char polyStringBf[POLY_STRING_BF_SZ];
@@ -79,6 +82,10 @@ char *er4     = "Will fail";                  // expected result
 //--------------------------------------------------------
 int main()
 {
+  //for time measurements
+  clock_t start, end;
+  double cpu_time_used;
+  
   int rVal;
   int passedCount = 0;
   int failedCount = 0;
@@ -155,6 +162,9 @@ int main()
 //---------------------TEST 4---------------------------
   printf( "Test 4 expected %s\n", er4);
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
+
+  start = clock();
+  
   if( 0 == rVal)
   { 
     polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
@@ -163,6 +173,11 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+  printf("Execution time of custom test (4): %f seconds\n", cpu_time_used);
+  
   printf( "Test 4 produced %s\n", polyStringBf);
   if( 0 == strcmp( polyStringBf, er4) )
   {
