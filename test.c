@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int readCSV(const char* csvFileName, double* x, double* y, size_t* size) {
+int readCSV(const char* csvFileName, double** x, double** y, size_t* size) {
     FILE* file = fopen(csvFileName, "r");
 
     if (file == NULL) {
@@ -50,11 +50,18 @@ int readCSV(const char* csvFileName, double* x, double* y, size_t* size) {
     size_t capacity = 1;  // Initial capacity, can be adjusted based on your needs
     char line[100];
 
-    // Allocate memory for *x and *y
-    x = (double*)malloc(capacity * sizeof(double));
-    y = (double*)malloc(capacity * sizeof(double));
+    // Skip the first line
+    if (fgets(line, sizeof(line), file) == NULL) {
+        fprintf(stderr, "Error: Unable to read the first line.\n");
+        fclose(file);
+        return 1;
+    }
 
-    if (x == NULL || y == NULL) {
+    // Allocate memory for *x and *y
+    *x = (double*)malloc(capacity * sizeof(double));
+    *y = (double*)malloc(capacity * sizeof(double));
+
+    if (*x == NULL || *y == NULL) {
         fprintf(stderr, "Error: Memory allocation failed.\n");
         fclose(file);
         return 1;
@@ -67,26 +74,26 @@ int readCSV(const char* csvFileName, double* x, double* y, size_t* size) {
             if (*size == capacity) {
                 // Double the capacity
                 capacity *= 2;
-                double* tempX = realloc(x, capacity * sizeof(double));
-                double* tempY = realloc(y, capacity * sizeof(double));
+                double* tempX = realloc(*x, capacity * sizeof(double));
+                double* tempY = realloc(*y, capacity * sizeof(double));
 
                 if (tempX == NULL || tempY == NULL) {
                     fprintf(stderr, "Error: Memory allocation failed.\n");
                     fclose(file);
 
                     // Clean up the existing memory
-                    free(x);
-                    free(y);
+                    free(*x);
+                    free(*y);
 
                     return 1;
                 }
 
-                x = tempX;
-                y = tempY;
+                *x = tempX;
+                *y = tempY;
             }
 
-            (x)[*size] = xValue;
-            (y)[*size] = yValue;
+            (*x)[*size] = xValue;
+            (*y)[*size] = yValue;
             (*size)++;
         } else {
             fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
@@ -148,7 +155,7 @@ int main()
   double* y4 = NULL;
   size_t size = 0;
 
-  int result = readCSV(csvFileName, x4, y4, &size);
+  int result = readCSV(csvFileName, &x4, &y4, &size);
 
   if(x4 == NULL || y4 == NULL){
     printf("reading failed");
