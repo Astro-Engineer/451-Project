@@ -150,6 +150,10 @@ int main()
 
   int result = readCSV(csvFileName, x4, y4, &size);
 
+  if(x4 == NULL || y4 == NULL){
+    printf("reading failed");
+  }
+
   int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount  
   double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
   int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
