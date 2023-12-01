@@ -68,8 +68,45 @@ char *er3     = "error = -4";                                 // expected result
 
 // ---------------- TEST 4 DATA ------------------------
 // test MLS regeression example from https://www.mathsisfun.com/data/least-squares-regression.html
-double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
-double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
+const char* csvFileName = "filteredDistTotal.csv"; // Replace with your CSV file name
+    FILE* file = fopen(csvFileName, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "Error: Unable to open the CSV file.\n");
+        return 1; // Return an error code
+    }
+
+    double* x4 = NULL;
+    double* y4 = NULL;
+    size_t size = 0;
+    char line[100];  // Directly using a constant value for simplicity
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        double x, y;
+
+        if (sscanf(line, "%lf,%lf", &x, &y) == 2) {
+            x4 = realloc(x4, (size + 1) * sizeof(double));
+            y4 = realloc(y4, (size + 1) * sizeof(double));
+
+            if (x4 == NULL || y4 == NULL) {
+                fprintf(stderr, "Error: Memory allocation failed.\n");
+                fclose(file);
+                free(x4);
+                free(y4);
+                return 1;
+            }
+
+            x4[size] = x;
+            x4[size] = y;
+            size++;
+        } else {
+            fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
+        }
+    }
+
+    fclose(file);
+//double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
+//double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
 int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount
 double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
 int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
