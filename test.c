@@ -32,6 +32,8 @@
 
 //for timing
 #include <time.h>
+//for csv
+#include <stdlib.h>
 
 // Buffer to hold a string representation of a polynomial:
 #define POLY_STRING_BF_SZ   (256)
