@@ -86,8 +86,8 @@ static void         destroyMatrix( matrix_t *pMat );
 #ifdef SHOW_MATRIX
 static void         reallyShowMatrix( matrix_t *pMat );
 #endif  // SHOW_MATRIX
-static matrix_t *   createTranspose( matrix_t *pMat );
-static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
+static matrix_t *   createTranspose( matrix_t *pMat, int numThreads );
+static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight, int numThreads );
 
 
 //=========================================================
