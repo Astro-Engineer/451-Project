@@ -35,6 +35,53 @@
 //for csv
 #include <stdlib.h>
 
+int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
+    FILE* file = fopen(csvFileName, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "Error: Unable to open the CSV file.\n");
+        return 1; // Return an error code
+    }
+
+    *size = 0;
+    size_t capacity = 1;  // Initial capacity, can be adjusted based on your needs
+    char line[100];
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        double xValue, yValue;
+
+        if (sscanf(line, "%lf,%lf", &xValue, &yValue) == 2) {
+            if (*size == capacity) {
+                // Double the capacity
+                capacity *= 2;
+                double* tempX = realloc(x, capacity * sizeof(double));
+                double* tempY = realloc(y, capacity * sizeof(double));
+
+                if (tempX == NULL || tempY == NULL) {
+                    fprintf(stderr, "Error: Memory allocation failed.\n");
+                    fclose(file);
+                    free(x);
+                    free(y);
+                    return 1;
+                }
+
+                x = tempX;
+                y = tempY;
+            }
+
+            x[*size] = xValue;
+            y[*size] = yValue;
+            (*size)++;
+        } else {
+            fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
+        }
+    }
+
+    fclose(file);
+    return 0; // Return 0 on success
+}
+
+
 // Buffer to hold a string representation of a polynomial:
 #define POLY_STRING_BF_SZ   (256)
 char polyStringBf[POLY_STRING_BF_SZ];
@@ -85,51 +132,7 @@ double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coe
 int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
 char *er4     = "Will fail";                  // expected result
 
-int readCSV(const char* csvFileName, double x[], double y[], size_t* size) {
-    FILE* file = fopen(csvFileName, "r");
 
-    if (file == NULL) {
-        fprintf(stderr, "Error: Unable to open the CSV file.\n");
-        return 1; // Return an error code
-    }
-
-    *size = 0;
-    size_t capacity = 1;  // Initial capacity, can be adjusted based on your needs
-    char line[100];
-
-    while (fgets(line, sizeof(line), file) != NULL) {
-        double xValue, yValue;
-
-        if (sscanf(line, "%lf,%lf", &xValue, &yValue) == 2) {
-            if (*size == capacity) {
-                // Double the capacity
-                capacity *= 2;
-                double* tempX = realloc(x, capacity * sizeof(double));
-                double* tempY = realloc(y, capacity * sizeof(double));
-
-                if (tempX == NULL || tempY == NULL) {
-                    fprintf(stderr, "Error: Memory allocation failed.\n");
-                    fclose(file);
-                    free(x);
-                    free(y);
-                    return 1;
-                }
-
-                x = tempX;
-                y = tempY;
-            }
-
-            x[*size] = xValue;
-            y[*size] = yValue;
-            (*size)++;
-        } else {
-            fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
-        }
-    }
-
-    fclose(file);
-    return 0; // Return 0 on success
-}
 
 //--------------------------------------------------------
 // main()
