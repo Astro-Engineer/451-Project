@@ -161,9 +161,10 @@ int main()
  
 //---------------------TEST 4---------------------------
   printf( "Test 4 expected %s\n", er4);
-  rVal = polyfit( pc4, x4, y4, cc4, cr4);
 
   start = clock();
+  
+  rVal = polyfit( pc4, x4, y4, cc4, cr4);
   
   if( 0 == rVal)
   { 
