@@ -152,7 +152,7 @@ int main()
   printf("Size3: %zu\n", size);
 
   int pc3       = (int)size;           // pointCount  
-  double cr3[]  = {0, 0, 0, 0};                                       // coefficientResults
+  double cr3[]  = {0, 0, 0, 0, 0};                                       // coefficientResults
   int cc3       =  (int) (sizeof(cr3) / sizeof(cr3[0]));        // coefficientCount
   char *er3     = "Will fail";                  // expected result
     
@@ -172,7 +172,7 @@ int main()
   printf("Size4: %zu\n", size);
 
   int pc4       = (int)size;           // pointCount  
-  double cr4[]  = {0, 0, 0, 0};                                       // coefficientResults
+  double cr4[]  = {0, 0, 0, 0, 0};                                       // coefficientResults
   int cc4       =  (int) (sizeof(cr4) / sizeof(cr4[0]));        // coefficientCount
   char *er4     = "Will fail";                  // expected result
   
