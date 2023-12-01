@@ -153,7 +153,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
     printf("Execution time of create (A): %f seconds\n", elapsed_time);
 
     clock_gettime(CLOCK_MONOTONIC, &s_fill);
-    blockPow(pMatA, xValues, pointCount, degree);
+    blockPow(pMatA, xValues, pointCount, degree, coefficientCount);
     clock_gettime(CLOCK_MONOTONIC, &e_fill);
     elapsed_time = (e_fill.tv_sec - s_fill.tv_sec) +
                        (e_fill.tv_nsec - s_fill.tv_nsec) / 1e9;
