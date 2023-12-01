@@ -347,7 +347,7 @@ static matrix_t * createTranspose( matrix_t *pMat )
             *MATRIX_VALUE_PTR(rVal, r, c) = *MATRIX_VALUE_PTR(pMat, c, r);
         }
     }
-
+    }
     printf("Number of active threads: %d\n", num_threads);
     return rVal;
 }
