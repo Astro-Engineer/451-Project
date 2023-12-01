@@ -32,7 +32,7 @@
 #include <stdlib.h>     // calloc()
 #include <string.h>     // strlen()
 
-#include "polyfit.h"
+#include "pthreads_polyfit.h"
 #include <pthread.h>
 
 // Define SHOW_MATRIX to display intermediate matrix values:
@@ -120,7 +120,7 @@ static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
 //          -4 if unable to solve equations.
 //--------------------------------------------------------
 //int polyfit( int pointCount, point_t pointArray[],  int coeffCount, double coeffArray[] )
-int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCount, double *coefficientResults )
+int pthreads_polyfit( int pointCount, double *xValues, double *yValues, int coefficientCount, double *coefficientResults )
 {
     int rVal = 0;
     int degree = coefficientCount - 1;
@@ -272,7 +272,7 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
 // its coefficients.
 // Returns 0 on success.
 //--------------------------------------------------------
-int polyToString( char *stringBuffer, size_t stringBufferSz, int coeffCount, double *coefficients )
+int pthreads_polyToString( char *stringBuffer, size_t stringBufferSz, int coeffCount, double *coefficients )
 {
     bool isThisTheFirstTermShown = true;
     if( (NULL == stringBuffer) || (NULL == coefficients) )
