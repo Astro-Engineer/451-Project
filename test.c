@@ -130,37 +130,46 @@ double cr2[]  = {0, 0, 0};                                    // coefficientResu
 int cc2       =  (int) (sizeof(cr2) / sizeof(cr2[0]));        // coefficientCount
 char *er2     = "(-0.142857 * x^2) + 0.485714";               // expected result
 
-// ---------------- TEST 3 DATA ------------------------
-// Create a failure test case with impossible to solve data.
-double x3[]   = { 0, 1, 1, 0};
-double y3[]   = { 0, 1, 1, 0};
-int pc3       = (int) (sizeof(x3) / sizeof(x3[0]));           // pointCount
-double cr3[]  = {0, 0, 0};                                    // coefficientResults
-int cc3       =  (int) (sizeof(cr3) / sizeof(cr3[0]));        // coefficientCount
-char *er3     = "error = -4";                                 // expected result
-
-
-
 //--------------------------------------------------------
 // main()
 // Unit tests the poly() function.
 //--------------------------------------------------------
 int main()
 {
+
+  // ---------------- TEST 3 DATA ------------------------
+  // Create a failure test case with impossible to solve data.
+  const char* csvFileNamePlane = "FlightDurationPrice.csv";
+  double* x3 = NULL;
+  double* y3 = NULL;
+  size_t size = 0;
+
+  int result = readCSV(csvFileName, &x3, &y3, &size);
+
+  if(x3 == NULL || y3 == NULL){
+    printf("reading failed");
+  }
+  printf("Size3: %zu\n", size);
+
+  int pc3       = (int)size;           // pointCount  
+  double cr3[]  = {0, 0, 0, 0};                                       // coefficientResults
+  int cc3       =  (int) (sizeof(cr3) / sizeof(cr3[0]));        // coefficientCount
+  char *er3     = "Will fail";                  // expected result
+    
   // ---------------- TEST 4 DATA ------------------------
   //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
   //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
   const char* csvFileName = "filteredDistTotal.csv";
   double* x4 = NULL;
   double* y4 = NULL;
-  size_t size = 0;
+  size = 0;
 
   int result = readCSV(csvFileName, &x4, &y4, &size);
 
   if(x4 == NULL || y4 == NULL){
     printf("reading failed");
   }
-  printf("Size: %zu\n", size);
+  printf("Size4: %zu\n", size);
 
   int pc4       = (int)size;           // pointCount  
   double cr4[]  = {0, 0, 0, 0};                                       // coefficientResults
