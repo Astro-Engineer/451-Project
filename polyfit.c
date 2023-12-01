@@ -33,6 +33,7 @@
 #include <string.h>     // strlen()
 
 #include "polyfit.h"
+#include <omp.h>
 
 // Define SHOW_MATRIX to display intermediate matrix values:
 // #define SHOW_MATRIX 1
