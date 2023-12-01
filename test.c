@@ -160,6 +160,7 @@ int main()
   if(x4 == NULL || y4 == NULL){
     printf("reading failed");
   }
+  printf("Size: %zu\n", size);
 
   int pc4       = (int) (sizeof(x4) / sizeof(x4[0]));           // pointCount  
   double cr4[]  = {0, 0, 0, 0, 0, 0};                                       // coefficientResults
