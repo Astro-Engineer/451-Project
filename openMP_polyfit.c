@@ -419,7 +419,7 @@ static matrix_t * createProduct( matrix_t *pLeft, matrix_t *pRight )
             for( k = 0; k < pLeft->cols; k++)
             {
 		sum = 0.0;
-                for( j = 0; j < rVal->cols; j++ 
+                for( j = 0; j < rVal->cols; j++) 
                 {
                     sum += (*MATRIX_VALUE_PTR(pLeft, i, k)) * (*MATRIX_VALUE_PTR(pRight, k, j));
                 }
