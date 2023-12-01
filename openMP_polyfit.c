@@ -219,7 +219,7 @@ int openmp_polyfit( int pointCount, double *xValues, double *yValues, int coeffi
 
     // Now we need to solve the system of linear equations,
     // (AT)Ax = (AT)b for "x", the coefficients of the polynomial.
-    clock_gettime(CLOCK_MONOTONIC, &e_gauss);
+    clock_gettime(CLOCK_MONOTONIC, &s_gauss);
     for( int c = 0; c < pMatATA->cols; c++ )
     {
         int pr = c;     // pr is the pivot row.
