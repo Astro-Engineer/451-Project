@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int readCSV(const char* csvFileName, double** x, double** y, size_t* size) {
+int readCSV(const char* csvFileName, double* x, double* y, size_t* size) {
     FILE* file = fopen(csvFileName, "r");
 
     if (file == NULL) {
@@ -85,8 +85,8 @@ int readCSV(const char* csvFileName, double** x, double** y, size_t* size) {
                 *y = tempY;
             }
 
-            (*x)[*size] = xValue;
-            (*y)[*size] = yValue;
+            (x)[*size] = xValue;
+            (y)[*size] = yValue;
             (*size)++;
         } else {
             fprintf(stderr, "Error: Invalid line format in the CSV file.\n");
