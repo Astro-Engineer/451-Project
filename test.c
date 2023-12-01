@@ -144,7 +144,7 @@ int main()
   double* y3 = NULL;
   size_t size = 0;
 
-  int result = readCSV(csvFileName, &x3, &y3, &size);
+  int result = readCSV(csvFileNamePlane, &x3, &y3, &size);
 
   if(x3 == NULL || y3 == NULL){
     printf("reading failed");
@@ -164,7 +164,7 @@ int main()
   double* y4 = NULL;
   size = 0;
 
-  int result = readCSV(csvFileName, &x4, &y4, &size);
+  result = readCSV(csvFileName, &x4, &y4, &size);
 
   if(x4 == NULL || y4 == NULL){
     printf("reading failed");
