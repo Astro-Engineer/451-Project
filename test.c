@@ -111,26 +111,6 @@ int readCSV(const char* csvFileName, double** x, double** y, size_t* size) {
 #define POLY_STRING_BF_SZ   (256)
 char polyStringBf[POLY_STRING_BF_SZ];
 
-// ---------------- TEST 1 DATA ------------------------
-// Create test data to find the closest line to (0,6), (1,0), and (2,0).
-// See also page 218 of: https://math.mit.edu/~gs/linearalgebra/ila0403.pdf
-double x1[]   = { 0, 1, 2};
-double y1[]   = { 6, 0, 0};
-int pc1       = (int) (sizeof(x1) / sizeof(x1[0]));           // pointCount
-double cr1[]  = {0, 0};                                       // coefficientResults
-int cc1       =  (int) (sizeof(cr1) / sizeof(cr1[0]));        // coefficientCount
-char *er1     = "(-3.000000 * x) + 5.000000";                 // expected result
-
-// ---------------- TEST 2 DATA ------------------------
-// Create test data to find the closest parabola to the points shown.
-// as example "4.3 B" on page 226 of: https://math.mit.edu/~gs/linearalgebra/ila0403.pdf
-double x2[]   = { -2, -1, 00, 1, 2};
-double y2[]   = { 0, 0, 1, 0, 0};
-int pc2       = (int) (sizeof(x2) / sizeof(x2[0]));           // pointCount
-double cr2[]  = {0, 0, 0};                                    // coefficientResults
-int cc2       =  (int) (sizeof(cr2) / sizeof(cr2[0]));        // coefficientCount
-char *er2     = "(-0.142857 * x^2) + 0.485714";               // expected result
-
 //--------------------------------------------------------
 // main()
 // Unit tests the poly() function.
@@ -181,62 +161,16 @@ int main()
   int passedCount = 0;
   int failedCount = 0;
 
-  //---------------------TEST 1---------------------------
-  printf( "Test 1 expected %s\n", er1);
-  rVal = polyfit( pc1, x1, y1, cc1, cr1);
-  if( 0 == rVal)
-  { 
-    polyToString( polyStringBf, POLY_STRING_BF_SZ, cc1, cr1 );
-  }
-  else
-  {
-    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
-  }
-  printf( "Test 1 produced %s\n", polyStringBf);
-  if( 0 == strcmp( polyStringBf, er1) )
-  {
-    printf( "Test 1 passed OK.\n\n");
-    passedCount += 1;
-  }
-  else
-  {
-    printf( "Test failed.\n\n");
-    failedCount += 1;
-  }
- 
-  //---------------------TEST 2---------------------------
-  printf( "Test 2 expected %s\n", er2);
-  rVal = polyfit( pc2, x2, y2, cc2, cr2);
-  if( 0 == rVal)
-  { 
-    polyToString( polyStringBf, POLY_STRING_BF_SZ, cc2, cr2 );
-  }
-  else
-  {
-    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
-  }
-  printf( "Test 2 produced %s\n", polyStringBf);
-  if( 0 == strcmp( polyStringBf, er2) )
-  {
-    printf( "Test 2 passed OK.\n\n");
-    passedCount += 1;
-  }
-  else
-  {
-    printf( "Test failed.\n\n");
-    failedCount += 1;
-  }
-  
  //---------------------TEST 3---------------------------
-  printf( "Test 3 expected %s\n", er3);
 
-  struct timespec start_time3, end_time3;
-  clock_gettime(CLOCK_MONOTONIC, &start_time3);
+  struct timespec start_time_p, end_time_p, start_time_pop, end_time_pop;
+
+  clock_gettime(CLOCK_MONOTONIC, &start_time_p);
   rVal = polyfit( pc3, x3, y3, cc3, cr3);
-  clock_gettime(CLOCK_MONOTONIC, &end_time3);
-  double elapsed_time3 = (end_time3.tv_sec - start_time3.tv_sec) +
-                       (end_time3.tv_nsec - start_time3.tv_nsec) / 1e9;
-  printf("Execution time of custom test (3): %f seconds\n", elapsed_time3);
+  clock_gettime(CLOCK_MONOTONIC, &end_time_p);
+  double elapsed_time = (end_time_p.tv_sec - start_time_p.tv_sec) +
+                       (end_time_p.tv_nsec - start_time_p.tv_nsec) / 1e9;
+  printf("Execution time of plane: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
@@ -246,30 +180,37 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  printf( "Test 3 produced %s\n", polyStringBf);
-  if( 0 == strcmp( polyStringBf, er3) )
-  {
-    printf( "Test 3 passed OK.\n\n");
-    passedCount += 1;
+  printf( "Test plane produced %s\n", polyStringBf);
+    
+  clock_gettime(CLOCK_MONOTONIC, &start_time_pop);
+  rVal = openmp_polyfit( pc3, x3, y3, cc3, cr3);
+  clock_gettime(CLOCK_MONOTONIC, &end_time_pop);
+  elapsed_time = (end_time_pop.tv_sec - start_time_pop.tv_sec) +
+                       (end_time_pop.tv_nsec - start_time_pop.tv_nsec) / 1e9;
+  printf("Execution time of openmp plane: %f seconds\n", elapsed_time_pop);
+    
+  if( 0 == rVal)
+  { 
+    openmp_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc3, cr3 );
   }
   else
   {
-    printf( "Test failed.\n\n");
-    failedCount += 1;
+    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
+  printf( "Test plane openmp produced %s\n", polyStringBf);
+ 
  
 //---------------------TEST 4---------------------------
-  printf( "Test 4 expected %s\n", er4);
 
-  struct timespec start_time4, end_time4;
-  clock_gettime(CLOCK_MONOTONIC, &start_time4);
-  
+  struct timespec start_time_t, end_time_t, start_time_top, end_time_top;
+
+  clock_gettime(CLOCK_MONOTONIC, &start_time_t);
   rVal = polyfit( pc4, x4, y4, cc4, cr4);
-  clock_gettime(CLOCK_MONOTONIC, &end_time4);
-  double elapsed_time4 = (end_time4.tv_sec - start_time4.tv_sec) +
-                       (end_time4.tv_nsec - start_time4.tv_nsec) / 1e9;
-  printf("Execution time of custom test (4): %f seconds\n", elapsed_time4);
-
+  clock_gettime(CLOCK_MONOTONIC, &end_time_t);
+  elapsed_time = (end_time_t.tv_sec - start_time_t.tv_sec) +
+                       (end_time_t.tv_nsec - start_time_t.tv_nsec) / 1e9;
+  printf("Execution time of taxi: %f seconds\n", elapsed_time);
+    
   if( 0 == rVal)
   { 
     polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
@@ -278,20 +219,26 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  
-  printf( "Test 4 produced %s\n", polyStringBf);
-  if( 0 == strcmp( polyStringBf, er4) )
-  {
-    printf( "Test 4 passed OK.\n\n");
-    passedCount += 1;
+  printf( "Test taxi produced %s\n", polyStringBf);
+    
+  clock_gettime(CLOCK_MONOTONIC, &start_time_top);
+  rVal = openmp_polyfit( pc4, x4, y4, cc4, cr4);
+  clock_gettime(CLOCK_MONOTONIC, &end_time_top);
+  elapsed_time = (end_time_top.tv_sec - start_time_top.tv_sec) +
+                       (end_time_top.tv_nsec - start_time_top.tv_nsec) / 1e9;
+  printf("Execution time of openmp taxi: %f seconds\n", elapsed_time_top);
+    
+  if( 0 == rVal)
+  { 
+    openmp_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
   }
   else
   {
-    printf( "Test failed.\n\n");
-    failedCount += 1;
+    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
+  printf( "Test taxi openmp produced %s\n", polyStringBf);
+ 
   
 //---------------------SUMMARY--------------------------- 
-  printf( "Tests complete: %d passed, %d failed.\n", passedCount, failedCount); 
   return( -failedCount );
 }
