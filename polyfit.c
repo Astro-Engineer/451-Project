@@ -105,6 +105,8 @@ static matrix_t *   createProduct( matrix_t *pLeft, matrix_t *pRight );
 //int polyfit( int pointCount, point_t pointArray[],  int coeffCount, double coeffArray[] )
 int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCount, double *coefficientResults )
 {
+    struct timespec s_fill, e_fill, s_mult, e_mult, s_trans, e_trans, s_gauss, e_gauss;
+    double elapsed_time;
     int rVal = 0;
     int degree = coefficientCount - 1;
 
@@ -136,6 +138,7 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
         return -3;
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &s_fill);
     for( int r = 0; r < pointCount; r++)
     {
         for( int c = 0; c < coefficientCount; c++)
@@ -143,7 +146,10 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
             *(MATRIX_VALUE_PTR(pMatA, r, c)) = pow((xValues[r]), (double) (degree -c));
         }
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_fill);
+    elapsed_time = (e_fill.tv_sec - s_fill.tv_sec) +
+                       (e_fill.tv_nsec - s_fill.tv_nsec) / 1e9;
+    printf("Execution time of fill (A): %f seconds\n", elapsed_time);
     showMatrix( pMatA );
 
     // Make the b matrix
@@ -158,6 +164,7 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
         *(MATRIX_VALUE_PTR(pMatB, r, 0)) = yValues[r];
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &s_trans);
     // Make the transpose of matrix A
     matrix_t * pMatAT = createTranspose( pMatA );
     if( NULL == pMatAT )
@@ -165,6 +172,11 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
         return -3;
     }
 
+    clock_gettime(CLOCK_MONOTONIC, &e_trans);
+    elapsed_time = (e_trans.tv_sec - s_trans.tv_sec) +
+                       (e_trans.tv_nsec - s_trans.tv_nsec) / 1e9;
+    printf("Execution time of trans (A): %f seconds\n", elapsed_time);
+	
     showMatrix( pMatAT );
 
     // Make the product of matrices AT and A:
@@ -176,18 +188,23 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
 
      showMatrix( pMatATA );
 
+    clock_gettime(CLOCK_MONOTONIC, &s_mult);
     // Make the product of matrices AT and b:
     matrix_t *pMatATB = createProduct( pMatAT, pMatB );
     if( NULL == pMatATB )
     {
         return -3;
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_mult);
+    elapsed_time = (e_mult.tv_sec - s_mult.tv_sec) +
+                       (e_mult.tv_nsec - s_mult.tv_nsec) / 1e9;
+    printf("Execution time of mult (A): %f seconds\n", elapsed_time);
+    
     showMatrix( pMatATB );
-
+    
     // Now we need to solve the system of linear equations,
     // (AT)Ax = (AT)b for "x", the coefficients of the polynomial.
-
+    clock_gettime(CLOCK_MONOTONIC, &s_gauss);
     for( int c = 0; c < pMatATA->cols; c++ )
     {
         int pr = c;     // pr is the pivot row.
@@ -229,7 +246,11 @@ int polyfit( int pointCount, double *xValues, double *yValues, int coefficientCo
         *MATRIX_VALUE_PTR(pMatATA, pr, c) /= prVal;
         *MATRIX_VALUE_PTR(pMatATB, pr, 0) /= prVal;
     }
-
+    clock_gettime(CLOCK_MONOTONIC, &e_gauss);
+    elapsed_time = (e_gauss.tv_sec - s_gauss.tv_sec) +
+                       (e_gauss.tv_nsec - s_gauss.tv_nsec) / 1e9;
+    printf("Execution time of gauss (A): %f seconds\n", elapsed_time);
+    
     showMatrix( pMatATA );
 
     showMatrix( pMatATB );
