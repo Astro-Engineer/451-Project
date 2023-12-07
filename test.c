@@ -121,7 +121,7 @@ int main()
 
   // ---------------- TEST 3 DATA ------------------------
   // Create a failure test case with impossible to solve data.
-  const char* csvFileNamePlane = "medCost10k.csv";
+  const char* csvFileNamePlane = "medCost10K.csv";
   double* x3 = NULL;
   double* y3 = NULL;
   size_t size = 0;
@@ -141,7 +141,7 @@ int main()
   // ---------------- TEST 4 DATA ------------------------
   //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
   //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
-  const char* csvFileName = "medCost100k.csv";
+  const char* csvFileName = "medCost100K.csv";
   double* x4 = NULL;
   double* y4 = NULL;
   size = 0;
@@ -162,7 +162,7 @@ int main()
   int passedCount = 0;
   int failedCount = 0;
 
-const char* csvFileNameTest5 = "your_file_5.csv";  // Replace with your actual CSV file name
+const char* csvFileNameTest5 = "medCost1M.csv";  // Replace with your actual CSV file name
 double* x5 = NULL;
 double* y5 = NULL;
 size_t size5 = 0;
@@ -180,7 +180,7 @@ int cc5 = (int)(sizeof(cr5) / sizeof(cr5[0]));  // coefficientCount
 const char* er5 = "Expected result for test 5";  // expected result
 
 // ---------------- TEST 6 DATA ------------------------
-const char* csvFileNameTest6 = "your_file_6.csv";  // Replace with your actual CSV file name
+const char* csvFileNameTest6 = "medCost10M.csv";  // Replace with your actual CSV file name
 double* x6 = NULL;
 double* y6 = NULL;
 size_t size6 = 0;
