@@ -162,7 +162,7 @@ int main()
   int passedCount = 0;
   int failedCount = 0;
 
-  const char* csvFileNameTest5 = "medCost1M.csv";  // Replace with your actual CSV file name
+const char* csvFileNameTest5 = "your_file_5.csv";  // Replace with your actual CSV file name
 double* x5 = NULL;
 double* y5 = NULL;
 size_t size5 = 0;
@@ -174,13 +174,13 @@ if (x5 == NULL || y5 == NULL) {
 }
 printf("Size5: %zu\n", size5);
 
-int pc5 = static_cast<int>(size5);  // pointCount
+int pc5 = (int)size5;  // pointCount
 double cr5[] = {0, 0, 0, 0, 0};  // coefficientResults
-int cc5 = static_cast<int>(sizeof(cr5) / sizeof(cr5[0]));  // coefficientCount
-char* er5 = "Expected result for test 5";  // expected result
+int cc5 = (int)(sizeof(cr5) / sizeof(cr5[0]));  // coefficientCount
+const char* er5 = "Expected result for test 5";  // expected result
 
 // ---------------- TEST 6 DATA ------------------------
-const char* csvFileNameTest6 = "medCost10M.csv";  // Replace with your actual CSV file name
+const char* csvFileNameTest6 = "your_file_6.csv";  // Replace with your actual CSV file name
 double* x6 = NULL;
 double* y6 = NULL;
 size_t size6 = 0;
@@ -192,14 +192,11 @@ if (x6 == NULL || y6 == NULL) {
 }
 printf("Size6: %zu\n", size6);
 
-int pc6 = static_cast<int>(size6);  // pointCount
+int pc6 = (int)size6;  // pointCount
 double cr6[] = {0, 0, 0, 0, 0};  // coefficientResults
-int cc6 = static_cast<int>(sizeof(cr6) / sizeof(cr6[0]));  // coefficientCount
-char* er6 = "Expected result for test 6";  // expected result
+int cc6 = (int)(sizeof(cr6) / sizeof(cr6[0]));  // coefficientCount
+const char* er6 = "Expected result for test 6";  // expected result
 
-int rVal;
-int passedCount = 0;
-int failedCount = 0;
 
   struct timespec start_time_p, end_time_p, start_time_pop, end_time_pop, start_time_ppt, end_time_ppt;
     //NAIVE
