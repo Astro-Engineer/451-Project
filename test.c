@@ -121,7 +121,7 @@ int main()
 
   // ---------------- TEST 3 DATA ------------------------
   // Create a failure test case with impossible to solve data.
-  const char* csvFileNamePlane = "FlightDurationPrice.csv";
+  const char* csvFileNamePlane = "medCost10k.csv";
   double* x3 = NULL;
   double* y3 = NULL;
   size_t size = 0;
@@ -141,7 +141,7 @@ int main()
   // ---------------- TEST 4 DATA ------------------------
   //double x4[]   = { 1.2, 13.69, 0.95, 1.24, 1.1, 1.9, 0.0, 0.66 };
   //double y4[]   = { 7.3, 43.3, 10.14, 7.8, 8.3, 15.05, 18.8, 6.3 };
-  const char* csvFileName = "food1.csv";
+  const char* csvFileName = "medCost100k.csv";
   double* x4 = NULL;
   double* y4 = NULL;
   size = 0;
@@ -162,7 +162,44 @@ int main()
   int passedCount = 0;
   int failedCount = 0;
 
- //---------------------TEST 3---------------------------
+  const char* csvFileNameTest5 = "medCost1M.csv";  // Replace with your actual CSV file name
+double* x5 = NULL;
+double* y5 = NULL;
+size_t size5 = 0;
+
+int result5 = readCSV(csvFileNameTest5, &x5, &y5, &size5);
+
+if (x5 == NULL || y5 == NULL) {
+    printf("Reading failed for test 5\n");
+}
+printf("Size5: %zu\n", size5);
+
+int pc5 = static_cast<int>(size5);  // pointCount
+double cr5[] = {0, 0, 0, 0, 0};  // coefficientResults
+int cc5 = static_cast<int>(sizeof(cr5) / sizeof(cr5[0]));  // coefficientCount
+char* er5 = "Expected result for test 5";  // expected result
+
+// ---------------- TEST 6 DATA ------------------------
+const char* csvFileNameTest6 = "medCost10M.csv";  // Replace with your actual CSV file name
+double* x6 = NULL;
+double* y6 = NULL;
+size_t size6 = 0;
+
+int result6 = readCSV(csvFileNameTest6, &x6, &y6, &size6);
+
+if (x6 == NULL || y6 == NULL) {
+    printf("Reading failed for test 6\n");
+}
+printf("Size6: %zu\n", size6);
+
+int pc6 = static_cast<int>(size6);  // pointCount
+double cr6[] = {0, 0, 0, 0, 0};  // coefficientResults
+int cc6 = static_cast<int>(sizeof(cr6) / sizeof(cr6[0]));  // coefficientCount
+char* er6 = "Expected result for test 6";  // expected result
+
+int rVal;
+int passedCount = 0;
+int failedCount = 0;
 
   struct timespec start_time_p, end_time_p, start_time_pop, end_time_pop, start_time_ppt, end_time_ppt;
     //NAIVE
@@ -181,7 +218,7 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  printf( "Test plane produced %s\n", polyStringBf);
+  printf( "10K plane produced %s\n", polyStringBf);
 
     //OPENMP
   clock_gettime(CLOCK_MONOTONIC, &start_time_pop);
@@ -189,7 +226,7 @@ int main()
   clock_gettime(CLOCK_MONOTONIC, &end_time_pop);
   elapsed_time = (end_time_pop.tv_sec - start_time_pop.tv_sec) +
                        (end_time_pop.tv_nsec - start_time_pop.tv_nsec) / 1e9;
-  printf("Execution time of openmp plane: %f seconds\n", elapsed_time);
+  printf("Execution time of openmp 10K: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
@@ -199,26 +236,8 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  printf( "Test plane openmp produced %s\n", polyStringBf);
-    /*
-    //PTHREADS
-  clock_gettime(CLOCK_MONOTONIC, &start_time_ppt);
-  rVal = pthreads_polyfit( pc3, x3, y3, cc3, cr3);
-  clock_gettime(CLOCK_MONOTONIC, &end_time_ppt);
-  elapsed_time = (end_time_ppt.tv_sec - start_time_ppt.tv_sec) +
-                       (end_time_ppt.tv_nsec - start_time_ppt.tv_nsec) / 1e9;
-  printf("Execution time of pthreads plane: %f seconds\n", elapsed_time);
-    
-  if( 0 == rVal)
-  { 
-    pthreads_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc3, cr3 );
-  }
-  else
-  {
-    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
-  }
-  printf( "Test plane pthreads produced %s\n", polyStringBf);
- */
+  printf( "10K openmp produced %s\n", polyStringBf);
+
  
 //---------------------TEST 4---------------------------
 
@@ -229,7 +248,7 @@ int main()
   clock_gettime(CLOCK_MONOTONIC, &end_time_t);
   elapsed_time = (end_time_t.tv_sec - start_time_t.tv_sec) +
                        (end_time_t.tv_nsec - start_time_t.tv_nsec) / 1e9;
-  printf("Execution time of taxi: %f seconds\n", elapsed_time);
+  printf("Execution time of 100K: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
@@ -239,14 +258,14 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  printf( "Test taxi produced %s\n", polyStringBf);
+  printf( "100K produced %s\n", polyStringBf);
     //OPENMP
   clock_gettime(CLOCK_MONOTONIC, &start_time_top);
   rVal = openmp_polyfit( pc4, x4, y4, cc4, cr4);
   clock_gettime(CLOCK_MONOTONIC, &end_time_top);
   elapsed_time = (end_time_top.tv_sec - start_time_top.tv_sec) +
                        (end_time_top.tv_nsec - start_time_top.tv_nsec) / 1e9;
-  printf("Execution time of openmp taxi: %f seconds\n", elapsed_time);
+  printf("Execution time of openmp 100K: %f seconds\n", elapsed_time);
     
   if( 0 == rVal)
   { 
@@ -256,26 +275,84 @@ int main()
   {
     snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
   }
-  printf( "Test taxi openmp produced %s\n", polyStringBf);
-    /*
-    //PTHREADS
-  clock_gettime(CLOCK_MONOTONIC, &start_time_tpt);
-  rVal = pthreads_polyfit( pc4, x4, y4, cc4, cr4);
-  clock_gettime(CLOCK_MONOTONIC, &end_time_tpt);
-  elapsed_time = (end_time_tpt.tv_sec - start_time_tpt.tv_sec) +
-                       (end_time_tpt.tv_nsec - start_time_tpt.tv_nsec) / 1e9;
-  printf("Execution time of pthreads taxi: %f seconds\n", elapsed_time);
-    
-  if( 0 == rVal)
-  { 
-    pthreads_polyToString( polyStringBf, POLY_STRING_BF_SZ, cc4, cr4 );
-  }
-  else
-  {
-    snprintf( polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal );
-  }
-  printf( "Test taxi pthreads produced %s\n", polyStringBf);
-  */
+  printf( "100K openmp produced %s\n", polyStringBf);
+
+    //TEST 5
+  struct timespec start_time_m, end_time_m, start_time_mp, end_time_mp, start_time_mpt, end_time_mpt;
+// NAIVE
+clock_gettime(CLOCK_MONOTONIC, &start_time_m);
+rVal = polyfit(pc5, x5, y5, cc5, cr5);
+clock_gettime(CLOCK_MONOTONIC, &end_time_m);
+elapsed_time = (end_time_m.tv_sec - start_time_m.tv_sec) +
+               (end_time_m.tv_nsec - start_time_m.tv_nsec) / 1e9;
+printf("Execution time of 1M points: %f seconds\n", elapsed_time);
+
+if (0 == rVal)
+{
+    polyToString(polyStringBf, POLY_STRING_BF_SZ, cc5, cr5);
+}
+else
+{
+    snprintf(polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal);
+}
+printf("1M points produced %s\n", polyStringBf);
+
+// OPENMP
+clock_gettime(CLOCK_MONOTONIC, &start_time_mp);
+rVal = openmp_polyfit(pc5, x5, y5, cc5, cr5);
+clock_gettime(CLOCK_MONOTONIC, &end_time_mp);
+elapsed_time = (end_time_mp.tv_sec - start_time_mp.tv_sec) +
+               (end_time_mp.tv_nsec - start_time_mp.tv_nsec) / 1e9;
+printf("Execution time of openmp 1M points: %f seconds\n", elapsed_time);
+
+if (0 == rVal)
+{
+    openmp_polyToString(polyStringBf, POLY_STRING_BF_SZ, cc5, cr5);
+}
+else
+{
+    snprintf(polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal);
+}
+printf("1M points openmp produced %s\n", polyStringBf);
+
+//Test6
+struct timespec start_time_l, end_time_l, start_time_lp, end_time_lp, start_time_lpt, end_time_lpt;
+// NAIVE
+clock_gettime(CLOCK_MONOTONIC, &start_time_l);
+rVal = polyfit(pc6, x6, y6, cc6, cr6);
+clock_gettime(CLOCK_MONOTONIC, &end_time_l);
+elapsed_time = (end_time_l.tv_sec - start_time_l.tv_sec) +
+               (end_time_l.tv_nsec - start_time_l.tv_nsec) / 1e9;
+printf("Execution time of 10M points: %f seconds\n", elapsed_time);
+
+if (0 == rVal)
+{
+    polyToString(polyStringBf, POLY_STRING_BF_SZ, cc6, cr6);
+}
+else
+{
+    snprintf(polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal);
+}
+printf("10M points produced %s\n", polyStringBf);
+
+// OPENMP
+clock_gettime(CLOCK_MONOTONIC, &start_time_lp);
+rVal = openmp_polyfit(pc6, x6, y6, cc6, cr6);
+clock_gettime(CLOCK_MONOTONIC, &end_time_lp);
+elapsed_time = (end_time_lp.tv_sec - start_time_lp.tv_sec) +
+               (end_time_lp.tv_nsec - start_time_lp.tv_nsec) / 1e9;
+printf("Execution time of openmp 10M points: %f seconds\n", elapsed_time);
+
+if (0 == rVal)
+{
+    openmp_polyToString(polyStringBf, POLY_STRING_BF_SZ, cc6, cr6);
+}
+else
+{
+    snprintf(polyStringBf, POLY_STRING_BF_SZ, "error = %d", rVal);
+}
+printf("10M points openmp produced %s\n", polyStringBf);
+
 //---------------------SUMMARY--------------------------- 
   return( -failedCount );
 }
